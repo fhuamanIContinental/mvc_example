@@ -11,6 +11,11 @@ namespace Mvc.Repository.PersonaRepo.Mapping
     public static class PersonaMapping
     {
 
+        /// <summary>
+        /// Cambia el objeto Persona a PersonaDto para ser utilizado en la capa de servicio o presentación
+        /// </summary>
+        /// <param name="persona"></param>
+        /// <returns></returns>
         public static PersonaDto ToDto(this Persona persona)
         {
             return new PersonaDto
@@ -28,7 +33,13 @@ namespace Mvc.Repository.PersonaRepo.Mapping
                 DateUpdate = persona.DateUpdate
             };
         }
-         public static Persona ToEntity(this PersonaDto personaDto)
+
+        /// <summary>
+        /// Cambia el objeto PersonaDto a Persona para ser utilizado en la capa de acceso a datos
+        /// </summary>
+        /// <param name="personaDto"></param>
+        /// <returns></returns>
+        public static Persona ToEntity(this PersonaDto personaDto)
         {
             return new Persona
             {
