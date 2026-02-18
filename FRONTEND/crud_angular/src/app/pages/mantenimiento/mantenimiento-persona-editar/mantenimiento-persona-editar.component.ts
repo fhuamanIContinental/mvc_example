@@ -18,15 +18,22 @@ import { PersonaService } from '../../../services/persona/persona.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MantenimientoPersonaEditarComponent {
+  
+  //DECLARANDO VARIABLES DE ENTRADA QUE PROVIENE DEL COMPONENTE PADRE (MANTENIMIENTO-PERSONA-LIST)
+  // PARA SABER SI SE ESTA CREANDO O EDITANDO UNA PERSONA
   persona = input<PersonaDto | null>(null);
   modo = input<'crear' | 'editar'>('crear');
 
+  //DECLARANDO VARIABLES DE SALIDA QUE PROVIENE DEL COMPONENTE PADRE (MANTENIMIENTO-PERSONA-LIST)
   cancelado = output<void>();
   guardado = output<void>();
 
+  //INYECTACMOS EL SERVICIO DE PERSONA SERVICES
   private readonly personaService = inject(PersonaService);
+  //INYECTAMOS EL FORM BUILDER PARA CONSTRUIR EL FORMULARIO REACTIVO
   private readonly formBuilder = inject(FormBuilder);
 
+  //INICIAMOS LA CONSTRUCCIÓN DEL FORMULARIO REACTIVO CON LOS CAMPOS CORRESPONDIENTES A LA ENTIDAD PERSONA
   readonly form = this.formBuilder.group({
     nombres: ['', [Validators.required]],
     apellidoPaterno: ['', [Validators.required]],
@@ -37,6 +44,9 @@ export class MantenimientoPersonaEditarComponent {
 
   cargando = false;
 
+  //CONSTRUCTOR DONDE SE EJECUTA 
+  // UN EFECTO CUANDO LA PROPIEDAD persona CAMBIA, PARA ACTUALIZAR LOS VALORES 
+  // DEL FORMULARIO CON LOS DATOS DE LA PERSONA SELECCIONADA
   constructor() {
     effect(() => {
       const persona = this.persona();
@@ -65,6 +75,7 @@ export class MantenimientoPersonaEditarComponent {
 
     const valores = this.form.getRawValue();
     const actual = this.persona();
+    const nowIso = new Date().toISOString();
 
     const payload: PersonaDto = {
       id: actual?.id ?? 0,
@@ -76,8 +87,8 @@ export class MantenimientoPersonaEditarComponent {
       telefono: valores.telefono,
       userCreate: actual?.userCreate ?? 0,
       userUpdate: actual?.userUpdate ?? 0,
-      dateCreated: actual?.dateCreated ?? '',
-      dateUpdate: actual?.dateUpdate ?? '',
+      dateCreated: nowIso,
+      dateUpdate: nowIso
     };
 
     const request$ = this.modo() === 'editar' && payload.id > 0

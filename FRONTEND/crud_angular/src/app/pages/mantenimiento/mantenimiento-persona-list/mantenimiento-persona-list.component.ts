@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { PersonaService } from '../../../services/persona/persona.service';
 import { PersonaDto } from '../../../models/persona/PersonaDto.model';
 import { MantenimientoPersonaEditarComponent } from '../mantenimiento-persona-editar/mantenimiento-persona-editar.component';
@@ -17,7 +17,7 @@ export class MantenimientoPersonaListComponent implements OnInit {
 
   _personaService = inject(PersonaService);
 
-  personas: PersonaDto[]  = [];
+  personas = signal<PersonaDto[]>([]);
   mostrarModal = false;
   modoEdicion: 'crear' | 'editar' = 'crear';
   personaSeleccionada: PersonaDto | null = null;
@@ -34,7 +34,7 @@ export class MantenimientoPersonaListComponent implements OnInit {
       //next => quiere decir que se ejecuta cuando la respuesta es exitosa
       next: (data) => {
         console.log("respuesta", data);
-        this.personas = data;
+        this.personas.set(data);
       },
       //error => se ejecuta cuando hay un error en la respuesta
       error: (err) => { console.log("ocurrio un error", err); },

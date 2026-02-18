@@ -20,7 +20,7 @@ namespace Mvc.Repository.PersonaRepo.Implementacion
 
         public async Task<PersonaDto> Create(PersonaDto request)
         {
-
+            request.IdTipoDocumento = 1;
             Persona person = PersonaMapping.ToEntity(request);
             await _db.Persona.AddAsync(person);
             await _db.SaveChangesAsync();
@@ -50,21 +50,43 @@ namespace Mvc.Repository.PersonaRepo.Implementacion
         public async Task<PersonaDto?> GetById(int id)
         {
             Persona? persona = await _db.Persona.Where(x => x.Id == id).FirstOrDefaultAsync();
-            if(persona == null) { return null; }
+            if (persona == null) { return null; }
             PersonaDto res = PersonaMapping.ToDto(persona);
             return res;
         }
 
         public async Task<PersonaDto> Update(PersonaDto request)
         {
-            Persona person = PersonaMapping.ToEntity(request);
-            _db.Persona.Update(person);
-            await _db.SaveChangesAsync();
+            var person = await _db.Persona.FindAsync(request.Id);
+            try
+            {
+                // Obtener la entidad existente desde la base de datos
 
-            request = PersonaMapping.ToDto(person);
-            return request;
+                if (person == null)
+                {
+                    throw new Exception("Persona no encontrada");
+                }
+
+                // Actualizar las propiedades
+                person.IdTipoDocumento = request.IdTipoDocumento;
+                person.Nombres = request.Nombres;
+                person.ApellidoPaterno = request.ApellidoPaterno;
+                person.ApellidoMaterno = request.ApellidoMaterno;
+                person.Direccion = request.Direccion;
+                person.Telefono = request.Telefono;
+                person.UserUpdate = request.UserUpdate;
+                person.DateUpdate = request.DateUpdate;
+
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
 
 
+            return PersonaMapping.ToDto(person);
         }
     }
 }

@@ -27,7 +27,7 @@ constructor() { }
   }
 
   update(id: number, data: PersonaDto): Observable<PersonaDto> {
-    const url = `${this.apiUrl}/${id}`;
+    const url = `${this.apiUrl}`;
     return this.http.put<PersonaDto>(url, data);
   }
 

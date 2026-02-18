@@ -35,22 +35,19 @@ namespace Mvc.Bussnies.Persona
 
         }
 
-        public Task<PersonaDto?> Update(PersonaDto request)
+        public async Task<PersonaDto?> Update(PersonaDto request)
         {
-            PersonaDto? personDb = _personaRepository.GetById(request.Id).Result;
+            PersonaDto? personDb = await _personaRepository.GetById(request.Id);
 
             if (personDb == null)
             {
-                new  Exception("persona a actualizar no existe");
-
+                throw new Exception("Persona a actualizar no existe");
             }
 
-            personDb.DateUpdate = request.DateUpdate;
-            personDb.UserUpdate = request.UserUpdate;
+            
+            PersonaDto result = await _personaRepository.Update(request);
 
-            _personaRepository.Update(personDb);
-
-            return Task.FromResult<PersonaDto?>(personDb);
+            return result;
 
         }
 

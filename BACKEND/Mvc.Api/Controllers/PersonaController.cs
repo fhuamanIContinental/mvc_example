@@ -54,17 +54,12 @@ namespace Mvc.Api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = persona.Id }, persona);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<PersonaDto>> Update(int id, [FromBody] PersonaDto request)
+        [HttpPut]
+        public async Task<ActionResult<PersonaDto>> Update([FromBody] PersonaDto request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }
-
-            if (id != request.Id)
-            {
-                return BadRequest(new { message = "El ID de la URL no coincide con el ID del objeto" });
             }
 
             PersonaDto? persona = await _personaBussnies.Update(request);

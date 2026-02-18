@@ -40,7 +40,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (persona of personas; track persona.id) {
+            @for (persona of personas(); track persona.id) {
             <tr>
               <td>{{ persona.id }}</td>
               <td>{{ persona.nombres }}</td>
@@ -68,15 +68,24 @@
     </div>
   </div>
 
+
+  <!-- EN EL CASO DE QUE LA VARIABLE mostrarModal ES IGUAL A TRUE ==> entonces va a construir el modal -->
   @if (mostrarModal) {
     <div class="modal-backdrop-custom" (click)="cerrarModal()"></div>
     <div class="modal-custom" role="dialog" aria-modal="true" aria-label="Ventana de edición de persona">
+
+
+
       <app-mantenimiento-persona-editar
         [persona]="personaSeleccionada"
         [modo]="modoEdicion"
         (cancelado)="cerrarModal()"
         (guardado)="onGuardado()"
       />
+
+
+
+
     </div>
   }
 </div>
