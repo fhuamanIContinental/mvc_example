@@ -42,7 +42,7 @@ namespace Mvc.Bussnies.Persona
             if (personDb == null)
             {
                 new  Exception("persona a actualizar no existe");
-                
+
             }
 
             personDb.DateUpdate = request.DateUpdate;
@@ -52,6 +52,11 @@ namespace Mvc.Bussnies.Persona
 
             return Task.FromResult<PersonaDto?>(personDb);
 
+        }
+
+        public async Task Delete(int id)
+        {
+            await _personaRepository.Delete(id);
         }
     }
 }

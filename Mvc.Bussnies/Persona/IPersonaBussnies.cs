@@ -11,5 +11,6 @@ namespace Mvc.Bussnies.Persona
         Task<PersonaDto?> GetById(int id);
         Task<PersonaDto> Create(PersonaDto request);
         Task<PersonaDto?> Update(PersonaDto request);
+        Task Delete(int id);
     }
 }

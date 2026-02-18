@@ -28,6 +28,70 @@ namespace Mvc.Api.Controllers
             return Ok(list);
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<PersonaDto>> GetById(int id)
+        {
+            PersonaDto? persona = await _personaBussnies.GetById(id);
+
+            if (persona == null)
+            {
+                return NotFound(new { message = "Persona no encontrada" });
+            }
+
+            return Ok(persona);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<PersonaDto>> Create([FromBody] PersonaDto request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            PersonaDto persona = await _personaBussnies.Create(request);
+
+            return CreatedAtAction(nameof(GetById), new { id = persona.Id }, persona);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<PersonaDto>> Update(int id, [FromBody] PersonaDto request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != request.Id)
+            {
+                return BadRequest(new { message = "El ID de la URL no coincide con el ID del objeto" });
+            }
+
+            PersonaDto? persona = await _personaBussnies.Update(request);
+
+            if (persona == null)
+            {
+                return NotFound(new { message = "Persona no encontrada" });
+            }
+
+            return Ok(persona);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            PersonaDto? persona = await _personaBussnies.GetById(id);
+
+            if (persona == null)
+            {
+                return NotFound(new { message = "Persona no encontrada" });
+            }
+
+            await _personaBussnies.Delete(id);
+
+            return NoContent();
+        }
+
 
     }
 }
