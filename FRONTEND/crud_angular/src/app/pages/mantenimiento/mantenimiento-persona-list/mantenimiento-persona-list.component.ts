@@ -1,11 +1,14 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { PersonaService } from '../../../services/persona/persona.service';
 import { PersonaDto } from '../../../models/persona/PersonaDto.model';
+import { MantenimientoPersonaEditarComponent } from '../mantenimiento-persona-editar/mantenimiento-persona-editar.component';
 
 @Component({
   selector: 'app-mantenimiento-persona-list',
+  imports: [MantenimientoPersonaEditarComponent],
   templateUrl: './mantenimiento-persona-list.component.html',
-  styleUrls: ['./mantenimiento-persona-list.component.css']
+  styleUrls: ['./mantenimiento-persona-list.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MantenimientoPersonaListComponent implements OnInit {
 
@@ -15,6 +18,9 @@ export class MantenimientoPersonaListComponent implements OnInit {
   _personaService = inject(PersonaService);
 
   personas: PersonaDto[]  = [];
+  mostrarModal = false;
+  modoEdicion: 'crear' | 'editar' = 'crear';
+  personaSeleccionada: PersonaDto | null = null;
 
   constructor() { }
 
@@ -36,6 +42,47 @@ export class MantenimientoPersonaListComponent implements OnInit {
       complete: () => { console.log('getAllPersonas completed'); }
     });
 
+  }
+
+  abrirAgregar(): void {
+    this.modoEdicion = 'crear';
+    this.personaSeleccionada = null;
+    this.mostrarModal = true;
+  }
+
+  abrirEditar(persona: PersonaDto): void {
+    this.modoEdicion = 'editar';
+    this.personaSeleccionada = { ...persona };
+    this.mostrarModal = true;
+  }
+
+  cerrarModal(): void {
+    this.mostrarModal = false;
+    this.personaSeleccionada = null;
+  }
+
+  onGuardado(): void {
+    this.cerrarModal();
+    this.getAllPersonas();
+  }
+
+  eliminarPersona(persona: PersonaDto): void {
+    const confirmado = window.confirm(
+      `¿Está seguro de eliminar el registro de ${persona.nombres ?? ''} ${persona.apellidoPaterno ?? ''}?`
+    );
+
+    if (!confirmado) {
+      return;
+    }
+
+    this._personaService.delete(persona.id).subscribe({
+      next: () => {
+        this.getAllPersonas();
+      },
+      error: (err) => {
+        console.log('ocurrio un error al eliminar', err);
+      },
+    });
   }
 
 
